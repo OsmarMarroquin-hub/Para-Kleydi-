@@ -1,0 +1,4812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Teorema de Pitágoras | Osmar Marroquín</title>
+
+<style>
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:root{
+    --black:#11100d;
+    --black2:#1c1a16;
+    --black3:#29251f;
+
+    --white:#fffdf8;
+    --cream:#fff8e8;
+
+    --yellow:#ffd21a;
+    --yellow2:#ffe978;
+
+    --orange:#ff8a00;
+    --orange2:#ffad42;
+    --orangeDark:#e86600;
+
+    --gray:#8d887f;
+    --line:rgba(255,255,255,.10);
+
+    --shadow:0 25px 70px rgba(0,0,0,.30);
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:
+        radial-gradient(circle at 80% 10%,rgba(255,210,26,.12),transparent 25%),
+        radial-gradient(circle at 20% 80%,rgba(255,138,0,.10),transparent 25%),
+        var(--black);
+    color:var(--white);
+    min-height:100vh;
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   FONDO
+========================================================= */
+
+#mathCanvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    opacity:.20;
+    z-index:0;
+}
+
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app{
+    position:relative;
+    z-index:1;
+    display:flex;
+    min-height:100vh;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar{
+    width:265px;
+    min-height:100vh;
+    background:rgba(17,16,13,.96);
+    border-right:1px solid var(--line);
+    padding:30px 20px;
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    z-index:20;
+    backdrop-filter:blur(20px);
+}
+
+.brand{
+    padding:5px 10px 35px;
+}
+
+.brand-icon{
+    width:58px;
+    height:58px;
+    border-radius:18px;
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--black);
+    font-size:28px;
+    font-weight:900;
+    margin-bottom:18px;
+    box-shadow:0 10px 30px rgba(255,138,0,.25);
+}
+
+.brand h2{
+    font-size:19px;
+    letter-spacing:.7px;
+    line-height:1.1;
+}
+
+.brand p{
+    color:var(--yellow);
+    font-size:11px;
+    letter-spacing:2px;
+    margin-top:8px;
+    font-weight:900;
+}
+
+.nav-title{
+    color:#68635b;
+    font-size:10px;
+    letter-spacing:2px;
+    margin:10px 12px 12px;
+    font-weight:800;
+}
+
+.nav{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.nav button{
+    border:none;
+    background:transparent;
+    color:#aaa59d;
+    padding:14px 15px;
+    border-radius:13px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:14px;
+    font-weight:700;
+    text-align:left;
+    transition:.25s;
+}
+
+.nav button:hover{
+    color:white;
+    background:rgba(255,255,255,.06);
+    transform:translateX(3px);
+}
+
+.nav button.active{
+    color:var(--black);
+    background:linear-gradient(90deg,var(--yellow),var(--orange));
+    box-shadow:0 8px 25px rgba(255,138,0,.20);
+}
+
+.nav-icon{
+    width:25px;
+    text-align:center;
+    font-size:17px;
+}
+
+.author-card{
+    position:absolute;
+    left:20px;
+    right:20px;
+    bottom:25px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.035);
+    border-radius:18px;
+    padding:17px;
+}
+
+.author-card span{
+    display:block;
+    color:#777169;
+    font-size:9px;
+    letter-spacing:2px;
+    margin-bottom:5px;
+}
+
+.author-card strong{
+    font-size:14px;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.main{
+    margin-left:265px;
+    width:calc(100% - 265px);
+    min-height:100vh;
+}
+
+.page{
+    display:none;
+    min-height:100vh;
+    padding:55px 6%;
+    animation:pageIn .4s ease;
+}
+
+.page.active{
+    display:block;
+}
+
+@keyframes pageIn{
+    from{
+        opacity:0;
+        transform:translateY(15px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    min-height:82vh;
+    display:flex;
+    align-items:center;
+}
+
+.hero-content{
+    max-width:850px;
+}
+
+.eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    color:var(--orange2);
+    font-size:11px;
+    letter-spacing:3px;
+    font-weight:900;
+    margin-bottom:22px;
+}
+
+.eyebrow::before{
+    content:"";
+    width:28px;
+    height:3px;
+    border-radius:20px;
+    background:linear-gradient(90deg,var(--yellow),var(--orange));
+}
+
+.hero h1{
+    font-size:clamp(50px,7vw,100px);
+    line-height:.92;
+    letter-spacing:-5px;
+    margin-bottom:28px;
+}
+
+.hero h1 span{
+    color:var(--yellow);
+}
+
+.hero-text{
+    max-width:700px;
+    color:#aaa49a;
+    font-size:17px;
+    line-height:1.7;
+    margin-bottom:35px;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:13px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    border:none;
+    cursor:pointer;
+    border-radius:13px;
+    padding:15px 23px;
+    font-weight:900;
+    font-size:14px;
+    transition:.25s;
+}
+
+.btn-primary{
+    color:var(--black);
+    background:linear-gradient(135deg,var(--yellow),var(--orange));
+    box-shadow:0 10px 30px rgba(255,138,0,.18);
+}
+
+.btn-primary:hover{
+    transform:translateY(-3px);
+    box-shadow:0 16px 35px rgba(255,138,0,.28);
+}
+
+.btn-secondary{
+    color:white;
+    background:rgba(255,255,255,.05);
+    border:1px solid var(--line);
+}
+
+.btn-secondary:hover{
+    background:rgba(255,255,255,.10);
+}
+
+
+/* =========================================================
+   FORMULAS
+========================================================= */
+
+.formula-strip{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-top:40px;
+}
+
+.formula{
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--line);
+    border-radius:15px;
+    padding:15px 20px;
+    min-width:160px;
+}
+
+.formula small{
+    color:#6f6a63;
+    display:block;
+    font-size:9px;
+    letter-spacing:1.5px;
+    margin-bottom:6px;
+}
+
+.formula strong{
+    font-size:20px;
+    color:var(--yellow);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.page-header{
+    margin-bottom:35px;
+}
+
+.page-header small{
+    color:var(--orange2);
+    font-size:10px;
+    font-weight:900;
+    letter-spacing:3px;
+}
+
+.page-header h2{
+    font-size:45px;
+    margin-top:9px;
+    letter-spacing:-2px;
+}
+
+.page-header p{
+    color:#8e8980;
+    margin-top:10px;
+    max-width:700px;
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   CALCULADORA
+========================================================= */
+
+.calculator-grid{
+    display:grid;
+    grid-template-columns:330px 1fr;
+    gap:22px;
+}
+
+.panel{
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--line);
+    border-radius:24px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+.panel-head{
+    padding:21px 23px;
+    border-bottom:1px solid var(--line);
+}
+
+.panel-head h3{
+    font-size:16px;
+}
+
+.panel-head p{
+    color:#777169;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.panel-body{
+    padding:23px;
+}
+
+
+/* =========================================================
+   SELECTOR DE FIGURAS
+========================================================= */
+
+.figure-options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:22px;
+}
+
+.figure-option{
+    padding:14px 8px;
+    background:rgba(255,255,255,.035);
+    border:1px solid var(--line);
+    border-radius:14px;
+    color:#aaa49c;
+    cursor:pointer;
+    text-align:center;
+    transition:.25s;
+}
+
+.figure-option:hover{
+    transform:translateY(-2px);
+    border-color:rgba(255,210,26,.4);
+}
+
+.figure-option.active{
+    background:linear-gradient(
+        135deg,
+        rgba(255,210,26,.18),
+        rgba(255,138,0,.13)
+    );
+    border-color:var(--yellow);
+    color:white;
+}
+
+.figure-option .big{
+    display:block;
+    font-size:28px;
+    margin-bottom:7px;
+}
+
+.figure-option small{
+    font-size:9px;
+    font-weight:900;
+}
+
+
+/* =========================================================
+   OPERACIONES
+========================================================= */
+
+.operation-title{
+    color:#777169;
+    font-size:10px;
+    letter-spacing:2px;
+    margin-bottom:10px;
+    font-weight:900;
+}
+
+.operation-list{
+    display:flex;
+    flex-direction:column;
+    gap:9px;
+    margin-bottom:20px;
+}
+
+.operation{
+    padding:13px 15px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.03);
+    color:#aaa49c;
+    cursor:pointer;
+    font-weight:800;
+    text-align:left;
+    transition:.2s;
+}
+
+.operation:hover{
+    background:rgba(255,255,255,.07);
+}
+
+.operation.active{
+    background:linear-gradient(
+        90deg,
+        rgba(255,210,26,.17),
+        rgba(255,138,0,.12)
+    );
+    color:white;
+    border-color:var(--orange);
+}
+
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+.input-group{
+    margin-bottom:15px;
+}
+
+.input-group label{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#aaa49d;
+    font-size:11px;
+    font-weight:800;
+    margin-bottom:7px;
+}
+
+.side-badge{
+    color:var(--yellow);
+    font-weight:900;
+}
+
+.input-group input{
+    width:100%;
+    padding:14px;
+    border-radius:12px;
+    border:1px solid var(--line);
+    background:rgba(0,0,0,.25);
+    color:white;
+    outline:none;
+    font-size:16px;
+    font-weight:800;
+    transition:.2s;
+}
+
+.input-group input:focus{
+    border-color:var(--yellow);
+    box-shadow:0 0 0 3px rgba(255,210,26,.08);
+}
+
+.input-group input:disabled{
+    opacity:.28;
+    cursor:not-allowed;
+}
+
+
+/* =========================================================
+   VISUALIZACIÓN
+========================================================= */
+
+.visual-area{
+    min-height:680px;
+    display:flex;
+    flex-direction:column;
+}
+
+.figure-stage{
+    flex:1;
+    min-height:490px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255,210,26,.055),
+            transparent 55%
+        ),
+        rgba(0,0,0,.10);
+}
+
+.figure-stage svg{
+    width:min(100%,760px);
+    height:490px;
+    overflow:visible;
+}
+
+
+/* =========================================================
+   SVG
+========================================================= */
+
+.svg-side{
+    stroke:var(--yellow);
+    stroke-width:8;
+    stroke-linecap:round;
+    fill:none;
+    transition:.35s;
+}
+
+.svg-side.active{
+    stroke:var(--orange);
+    filter:drop-shadow(
+        0 0 12px rgba(255,138,0,.65)
+    );
+    stroke-width:11;
+}
+
+.svg-label{
+    fill:white;
+    font-size:22px;
+    font-weight:900;
+    text-anchor:middle;
+}
+
+.svg-value{
+    fill:var(--yellow);
+    font-size:19px;
+    font-weight:900;
+    text-anchor:middle;
+}
+
+.svg-value.active{
+    fill:var(--orange2);
+}
+
+.svg-fill{
+    fill:rgba(255,210,26,.035);
+}
+
+.svg-outline{
+    stroke:var(--yellow);
+    stroke-width:8;
+    fill:rgba(255,210,26,.035);
+    stroke-linejoin:round;
+}
+
+.right-angle{
+    fill:none;
+    stroke:var(--orange);
+    stroke-width:5;
+}
+
+
+/* =========================================================
+   RESULTADO
+========================================================= */
+
+.result-panel{
+    border-top:1px solid var(--line);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+}
+
+.result-box{
+    padding:22px;
+}
+
+.result-box + .result-box{
+    border-left:1px solid var(--line);
+}
+
+.result-box small{
+    display:block;
+    color:#777169;
+    font-size:9px;
+    letter-spacing:2px;
+    margin-bottom:7px;
+}
+
+.result-value{
+    font-size:36px;
+    font-weight:900;
+    color:var(--yellow);
+}
+
+.steps{
+    color:#a39e95;
+    font-family:monospace;
+    line-height:1.7;
+    font-size:13px;
+}
+
+
+/* =========================================================
+   ALERTA
+========================================================= */
+
+.alert{
+    margin-top:14px;
+    padding:12px;
+    border-radius:11px;
+    background:rgba(255,80,50,.10);
+    border:1px solid rgba(255,80,50,.25);
+    color:#ff9a84;
+    font-size:12px;
+    display:none;
+    line-height:1.5;
+}
+
+.alert.show{
+    display:block;
+}
+
+
+/* =========================================================
+   HISTORIAL
+========================================================= */
+
+.history-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+
+.history-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    padding:18px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--line);
+    border-radius:15px;
+}
+
+.history-main{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.history-icon{
+    width:45px;
+    height:45px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,210,26,.1);
+    color:var(--yellow);
+    font-size:20px;
+}
+
+.history-item strong{
+    display:block;
+    margin-bottom:5px;
+}
+
+.history-item small{
+    color:#777169;
+}
+
+.history-result{
+    font-size:21px;
+    color:var(--yellow);
+    font-weight:900;
+}
+
+.empty{
+    padding:50px;
+    text-align:center;
+    color:#66615a;
+    border:1px dashed var(--line);
+    border-radius:16px;
+}
+
+
+/* =========================================================
+   GALLERY
+========================================================= */
+
+.gallery{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.gallery-card{
+    min-height:230px;
+    border-radius:22px;
+    border:1px solid var(--line);
+    background:
+        radial-gradient(
+            circle at 70% 25%,
+            rgba(255,210,26,.15),
+            transparent 25%
+        ),
+        rgba(255,255,255,.035);
+    padding:25px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    transition:.3s;
+}
+
+.gallery-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(255,210,26,.35);
+}
+
+.gallery-shape{
+    font-size:70px;
+    color:var(--yellow);
+    text-align:center;
+}
+
+.gallery-card h3{
+    margin-bottom:5px;
+}
+
+.gallery-card p{
+    color:#777169;
+    font-size:12px;
+    line-height:1.5;
+}
+
+
+/* =========================================================
+   ABOUT
+========================================================= */
+
+.about-card{
+    max-width:850px;
+    background:rgba(255,255,255,.045);
+    border:1px solid var(--line);
+    border-radius:25px;
+    padding:45px;
+}
+
+.about-card h3{
+    font-size:30px;
+    margin-bottom:18px;
+}
+
+.about-card p{
+    color:#99938a;
+    line-height:1.8;
+    margin-bottom:18px;
+}
+
+.about-highlight{
+    margin-top:30px;
+    border-left:4px solid var(--yellow);
+    padding:18px 20px;
+    background:rgba(255,210,26,.06);
+    color:#d4cec3;
+    line-height:1.7;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.footer{
+    color:#555149;
+    font-size:10px;
+    text-align:center;
+    padding:35px;
+    letter-spacing:1px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    .sidebar{
+        width:215px;
+    }
+
+    .main{
+        margin-left:215px;
+        width:calc(100% - 215px);
+    }
+
+    .calculator-grid{
+        grid-template-columns:1fr;
+    }
+
+    .gallery{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+
+@media(max-width:760px){
+
+    .sidebar{
+        position:relative;
+        width:100%;
+        min-height:auto;
+        border-right:none;
+        border-bottom:1px solid var(--line);
+        padding:18px;
+    }
+
+    .app{
+        display:block;
+    }
+
+    .main{
+        margin-left:0;
+        width:100%;
+    }
+
+    .author-card{
+        display:none;
+    }
+
+    .brand{
+        padding-bottom:18px;
+    }
+
+    .nav{
+        display:grid;
+        grid-template-columns:repeat(5,1fr);
+    }
+
+    .nav button{
+        justify-content:center;
+        padding:10px 5px;
+    }
+
+    .nav button span:last-child{
+        display:none;
+    }
+
+    .nav-title{
+        display:none;
+    }
+
+    .page{
+        padding:35px 18px;
+    }
+
+    .hero{
+        min-height:auto;
+        padding:50px 0;
+    }
+
+    .hero h1{
+        font-size:52px;
+        letter-spacing:-3px;
+    }
+
+    .formula-strip{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .gallery{
+        grid-template-columns:1fr;
+    }
+
+    .result-panel{
+        grid-template-columns:1fr;
+    }
+
+    .result-box + .result-box{
+        border-left:none;
+        border-top:1px solid var(--line);
+    }
+
+    .figure-stage{
+        min-height:370px;
+    }
+
+    .figure-stage svg{
+        height:370px;
+    }
+
+    .page-header h2{
+        font-size:35px;
+    }
+
+}
+
+
+/* =========================================================
+   PEQUEÑO EFECTO DE CARGA
+========================================================= */
+
+@keyframes glow{
+
+    0%,100%{
+        filter:drop-shadow(
+            0 0 4px rgba(255,210,26,.2)
+        );
+    }
+
+    50%{
+        filter:drop-shadow(
+            0 0 16px rgba(255,138,0,.45)
+        );
+    }
+
+}
+
+.svg-side.active{
+    animation:glow 1.7s infinite;
+}
+
+</style>
+</head>
+
+
+<body>
+
+<canvas id="mathCanvas"></canvas>
+
+
+<div class="app">
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            △
+        </div>
+
+        <h2>
+            TEOREMA DE<br>
+            PITÁGORAS
+        </h2>
+
+        <p>
+            OSMAR MARROQUÍN
+        </p>
+
+    </div>
+
+
+    <div class="nav-title">
+        MENÚ PRINCIPAL
+    </div>
+
+
+    <nav class="nav">
+
+        <button class="active" data-page="inicio">
+
+            <span class="nav-icon">⌂</span>
+
+            <span>Inicio</span>
+
+        </button>
+
+
+        <button data-page="calcular">
+
+            <span class="nav-icon">√</span>
+
+            <span>Calcular</span>
+
+        </button>
+
+
+        <button data-page="historial">
+
+            <span class="nav-icon">↺</span>
+
+            <span>Historial</span>
+
+        </button>
+
+
+        <button data-page="figuras">
+
+            <span class="nav-icon">△</span>
+
+            <span>Figuras</span>
+
+        </button>
+
+
+        <button data-page="acerca">
+
+            <span class="nav-icon">i</span>
+
+            <span>Acerca</span>
+
+        </button>
+
+    </nav>
+
+
+    <div class="author-card">
+
+        <span>
+            PROYECTO ACADÉMICO
+        </span>
+
+        <strong>
+            Osmar Marroquín
+        </strong>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+
+<!-- =====================================================
+     INICIO
+===================================================== -->
+
+<section class="page active" id="inicio">
+
+    <div class="hero">
+
+        <div class="hero-content">
+
+            <div class="eyebrow">
+                GEOMETRÍA · CÁLCULO · PRECISIÓN
+            </div>
+
+
+            <h1>
+
+                Calcula<br>
+
+                <span>Hipotenusas</span><br>
+
+                y Catetos.
+
+            </h1>
+
+
+            <p class="hero-text">
+
+                Una calculadora geométrica interactiva para resolver
+                diferentes figuras y operaciones matemáticas.
+                Selecciona una figura, introduce sus medidas
+                y observa el procedimiento paso a paso.
+
+            </p>
+
+
+            <div class="hero-buttons">
+
+                <button
+                    class="btn btn-primary"
+                    onclick="goTo('calcular')"
+                >
+                    Comenzar cálculo →
+                </button>
+
+
+                <button
+                    class="btn btn-secondary"
+                    onclick="goTo('figuras')"
+                >
+                    Explorar figuras
+                </button>
+
+            </div>
+
+
+            <div class="formula-strip">
+
+                <div class="formula">
+
+                    <small>
+                        PITÁGORAS
+                    </small>
+
+                    <strong>
+                        c = √(a²+b²)
+                    </strong>
+
+                </div>
+
+
+                <div class="formula">
+
+                    <small>
+                        CÍRCULO
+                    </small>
+
+                    <strong>
+                        A = πr²
+                    </strong>
+
+                </div>
+
+
+                <div class="formula">
+
+                    <small>
+                        RECTÁNGULO
+                    </small>
+
+                    <strong>
+                        A = b × h
+                    </strong>
+
+                </div>
+
+
+                <div class="formula">
+
+                    <small>
+                        CUADRADO
+                    </small>
+
+                    <strong>
+                        A = l²
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        TEOREMA DE PITÁGORAS · OSMAR MARROQUÍN
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CALCULADORA
+===================================================== -->
+
+<section class="page" id="calcular">
+
+
+    <div class="page-header">
+
+        <small>
+            CALCULADORA GEOMÉTRICA
+        </small>
+
+        <h2 id="calculatorTitle">
+            Calculadora
+        </h2>
+
+        <p id="calculatorDescription">
+            Selecciona una figura para comenzar.
+        </p>
+
+    </div>
+
+
+
+    <div class="calculator-grid">
+
+
+        <!-- =============================================
+             PANEL DE CONTROL
+        ============================================== -->
+
+        <div class="panel">
+
+
+            <div class="panel-head">
+
+                <h3>
+                    Selecciona una figura
+                </h3>
+
+                <p>
+                    Elige qué deseas calcular
+                </p>
+
+            </div>
+
+
+            <div class="panel-body">
+
+
+                <div class="figure-options">
+
+
+                    <div
+                        class="figure-option active"
+                        data-figure="pitagoras"
+                    >
+
+                        <span class="big">
+                            △
+                        </span>
+
+                        <small>
+                            PITÁGORAS
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="figure-option"
+                        data-figure="circulo"
+                    >
+
+                        <span class="big">
+                            ○
+                        </span>
+
+                        <small>
+                            CÍRCULO
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="figure-option"
+                        data-figure="rectangulo"
+                    >
+
+                        <span class="big">
+                            ▭
+                        </span>
+
+                        <small>
+                            RECTÁNGULO
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="figure-option"
+                        data-figure="cuadrado"
+                    >
+
+                        <span class="big">
+                            □
+                        </span>
+
+                        <small>
+                            CUADRADO
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="figure-option"
+                        data-figure="triangulo"
+                    >
+
+                        <span class="big">
+                            ▲
+                        </span>
+
+                        <small>
+                            TRIÁNGULO
+                        </small>
+
+                    </div>
+
+
+                    <div
+                        class="figure-option"
+                        data-figure="distancia"
+                    >
+
+                        <span class="big">
+                            ↗
+                        </span>
+
+                        <small>
+                            DISTANCIA
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+
+                <div
+                    class="operation-title"
+                    id="operationTitle"
+                >
+                    OPERACIÓN
+                </div>
+
+
+                <div
+                    class="operation-list"
+                    id="operationList"
+                ></div>
+
+
+                <div id="inputsContainer"></div>
+
+
+                <div
+                    class="alert"
+                    id="alertBox"
+                ></div>
+
+
+                <button
+                    class="btn btn-primary"
+                    style="width:100%;margin-top:8px;"
+                    onclick="calculate()"
+                >
+                    CALCULAR RESULTADO
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =============================================
+             VISUALIZACIÓN
+        ============================================== -->
+
+        <div class="panel visual-area">
+
+
+            <div class="panel-head">
+
+                <h3 id="visualTitle">
+                    Triángulo rectángulo
+                </h3>
+
+                <p id="visualDescription">
+                    Los valores aparecerán directamente sobre la figura.
+                </p>
+
+            </div>
+
+
+            <div
+                class="figure-stage"
+                id="figureStage"
+            >
+
+            </div>
+
+
+            <div class="result-panel">
+
+
+                <div class="result-box">
+
+                    <small>
+                        RESULTADO
+                    </small>
+
+                    <div
+                        class="result-value"
+                        id="result"
+                    >
+                        —
+                    </div>
+
+                </div>
+
+
+                <div class="result-box">
+
+                    <small>
+                        PROCEDIMIENTO
+                    </small>
+
+                    <div
+                        class="steps"
+                        id="steps"
+                    >
+                        Introduce los valores
+                        para comenzar.
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer">
+        CALCULADORA GEOMÉTRICA · OSMAR MARROQUÍN
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     HISTORIAL
+===================================================== -->
+
+<section class="page" id="historial">
+
+
+    <div class="page-header">
+
+        <small>
+            REGISTRO
+        </small>
+
+        <h2>
+            Historial
+        </h2>
+
+        <p>
+            Aquí aparecerán todas las operaciones realizadas.
+        </p>
+
+    </div>
+
+
+    <div class="panel">
+
+        <div class="panel-body">
+
+            <div
+                class="history-list"
+                id="historyList"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     FIGURAS
+===================================================== -->
+
+<section class="page" id="figuras">
+
+
+    <div class="page-header">
+
+        <small>
+            GEOMETRÍA
+        </small>
+
+        <h2>
+            Figuras
+        </h2>
+
+        <p>
+            Selecciona cualquiera de estas figuras para
+            utilizar su calculadora correspondiente.
+        </p>
+
+    </div>
+
+
+    <div class="gallery">
+
+
+        <div class="gallery-card">
+
+            <div class="gallery-shape">
+                △
+            </div>
+
+            <div>
+
+                <h3>
+                    Teorema de Pitágoras
+                </h3>
+
+                <p>
+                    Calcula hipotenusa y catetos
+                    de un triángulo rectángulo.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="gallery-card">
+
+            <div class="gallery-shape">
+                ○
+            </div>
+
+            <div>
+
+                <h3>
+                    Círculo
+                </h3>
+
+                <p>
+                    Calcula radio, diámetro,
+                    área y circunferencia.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="gallery-card">
+
+            <div class="gallery-shape">
+                ▭
+            </div>
+
+            <div>
+
+                <h3>
+                    Rectángulo
+                </h3>
+
+                <p>
+                    Calcula base, altura,
+                    área y perímetro.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="gallery-card">
+
+            <div class="gallery-shape">
+                □
+            </div>
+
+            <div>
+
+                <h3>
+                    Cuadrado
+                </h3>
+
+                <p>
+                    Calcula lado, área
+                    y perímetro.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="gallery-card">
+
+            <div class="gallery-shape">
+                ▲
+            </div>
+
+            <div>
+
+                <h3>
+                    Triángulo
+                </h3>
+
+                <p>
+                    Calcula base, altura,
+                    área y perímetro.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="gallery-card">
+
+            <div class="gallery-shape">
+                ↗
+            </div>
+
+            <div>
+
+                <h3>
+                    Distancia
+                </h3>
+
+                <p>
+                    Calcula la distancia entre
+                    dos puntos en el plano.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="footer">
+        GEOMETRÍA · MATEMÁTICA · OSMAR MARROQUÍN
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     ACERCA
+===================================================== -->
+
+<section class="page" id="acerca">
+
+
+    <div class="page-header">
+
+        <small>
+            PROYECTO
+        </small>
+
+        <h2>
+            Teorema de Pitágoras
+        </h2>
+
+        <p>
+            Calculadora geométrica interactiva.
+        </p>
+
+    </div>
+
+
+    <div class="about-card">
+
+        <h3>
+            Una herramienta matemática completa
+        </h3>
+
+
+        <p>
+            Este proyecto fue desarrollado para realizar
+            cálculos geométricos de una manera visual,
+            interactiva y sencilla.
+        </p>
+
+
+        <p>
+            La aplicación permite seleccionar diferentes
+            figuras geométricas y realizar cálculos de
+            sus principales medidas.
+        </p>
+
+
+        <p>
+            Cada operación muestra el resultado y el
+            procedimiento utilizado, mientras que los
+            valores ingresados se representan directamente
+            sobre la figura.
+        </p>
+
+
+        <div class="about-highlight">
+
+            <strong>
+                Proyecto realizado por Osmar Marroquín.
+            </strong>
+
+            <br><br>
+
+            HTML5 · CSS3 · JavaScript
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        TEOREMA DE PITÁGORAS · OSMAR MARROQUÍN
+    </div>
+
+</section>
+
+
+</main>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+const navButtons =
+    document.querySelectorAll(".nav button");
+
+const pages =
+    document.querySelectorAll(".page");
+
+
+function goTo(pageName){
+
+    navButtons.forEach(button => {
+
+        button.classList.toggle(
+            "active",
+            button.dataset.page === pageName
+        );
+
+    });
+
+
+    pages.forEach(page => {
+
+        page.classList.toggle(
+            "active",
+            page.id === pageName
+        );
+
+    });
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+navButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+            goTo(button.dataset.page);
+        }
+    );
+
+});
+
+
+
+/* =========================================================
+   DATOS DE FIGURAS
+========================================================= */
+
+const figureData = {
+
+
+    pitagoras:{
+
+        title:"Teorema de Pitágoras",
+
+        description:
+            "Calcula hipotenusa y catetos de un triángulo rectángulo.",
+
+        visual:
+            "Triángulo rectángulo",
+
+        visualDescription:
+            "Los valores aparecen directamente sobre cada lado.",
+
+        operations:[
+
+            {
+                id:"hipotenusa",
+                name:"Hallar hipotenusa C"
+            },
+
+            {
+                id:"catetoA",
+                name:"Hallar cateto A"
+            },
+
+            {
+                id:"catetoB",
+                name:"Hallar cateto B"
+            }
+
+        ]
+
+    },
+
+
+    circulo:{
+
+        title:"Calculadora de Círculo",
+
+        description:
+            "Calcula radio, diámetro, área y circunferencia.",
+
+        visual:
+            "Círculo",
+
+        visualDescription:
+            "La medida del radio y diámetro se muestran sobre la figura.",
+
+        operations:[
+
+            {
+                id:"area",
+                name:"Calcular área"
+            },
+
+            {
+                id:"circunferencia",
+                name:"Calcular circunferencia"
+            },
+
+            {
+                id:"diametro",
+                name:"Calcular diámetro"
+            },
+
+            {
+                id:"radio",
+                name:"Calcular radio"
+            }
+
+        ]
+
+    },
+
+
+    rectangulo:{
+
+        title:"Calculadora de Rectángulo",
+
+        description:
+            "Calcula área y perímetro de un rectángulo.",
+
+        visual:
+            "Rectángulo",
+
+        visualDescription:
+            "La base y la altura se representan directamente.",
+
+        operations:[
+
+            {
+                id:"area",
+                name:"Calcular área"
+            },
+
+            {
+                id:"perimetro",
+                name:"Calcular perímetro"
+            }
+
+        ]
+
+    },
+
+
+    cuadrado:{
+
+        title:"Calculadora de Cuadrado",
+
+        description:
+            "Calcula área y perímetro de un cuadrado.",
+
+        visual:
+            "Cuadrado",
+
+        visualDescription:
+            "El lado aparece indicado directamente sobre la figura.",
+
+        operations:[
+
+            {
+                id:"area",
+                name:"Calcular área"
+            },
+
+            {
+                id:"perimetro",
+                name:"Calcular perímetro"
+            }
+
+        ]
+
+    },
+
+
+    triangulo:{
+
+        title:"Calculadora de Triángulo",
+
+        description:
+            "Calcula área y perímetro de un triángulo.",
+
+        visual:
+            "Triángulo",
+
+        visualDescription:
+            "Base, altura y lados se muestran sobre la figura.",
+
+        operations:[
+
+            {
+                id:"area",
+                name:"Calcular área"
+            },
+
+            {
+                id:"perimetro",
+                name:"Calcular perímetro"
+            }
+
+        ]
+
+    },
+
+
+    distancia:{
+
+        title:"Calculadora de Distancia",
+
+        description:
+            "Calcula la distancia entre dos puntos.",
+
+        visual:
+            "Distancia entre puntos",
+
+        visualDescription:
+            "Observa los puntos y la distancia calculada.",
+
+        operations:[
+
+            {
+                id:"distancia",
+                name:"Calcular distancia"
+            }
+
+        ]
+
+    }
+
+};
+
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let currentFigure =
+    "pitagoras";
+
+let currentOperation =
+    "hipotenusa";
+
+
+const figureStage =
+    document.getElementById(
+        "figureStage"
+    );
+
+const operationList =
+    document.getElementById(
+        "operationList"
+    );
+
+const inputsContainer =
+    document.getElementById(
+        "inputsContainer"
+    );
+
+const calculatorTitle =
+    document.getElementById(
+        "calculatorTitle"
+    );
+
+const calculatorDescription =
+    document.getElementById(
+        "calculatorDescription"
+    );
+
+const visualTitle =
+    document.getElementById(
+        "visualTitle"
+    );
+
+const visualDescription =
+    document.getElementById(
+        "visualDescription"
+    );
+
+const result =
+    document.getElementById(
+        "result"
+    );
+
+const steps =
+    document.getElementById(
+        "steps"
+    );
+
+const alertBox =
+    document.getElementById(
+        "alertBox"
+    );
+
+
+
+/* =========================================================
+   SELECTOR DE FIGURAS
+========================================================= */
+
+document
+.querySelectorAll(".figure-option")
+.forEach(option => {
+
+    option.addEventListener(
+        "click",
+        () => {
+
+            currentFigure =
+                option.dataset.figure;
+
+            document
+            .querySelectorAll(".figure-option")
+            .forEach(item => {
+
+                item.classList.toggle(
+                    "active",
+                    item === option
+                );
+
+            });
+
+
+            currentOperation =
+                figureData[
+                    currentFigure
+                ].operations[0].id;
+
+
+            renderCalculator();
+
+        }
+    );
+
+});
+
+
+
+/* =========================================================
+   CREAR CALCULADORA
+========================================================= */
+
+function renderCalculator(){
+
+    const data =
+        figureData[currentFigure];
+
+
+    calculatorTitle.textContent =
+        data.title;
+
+
+    calculatorDescription.textContent =
+        data.description;
+
+
+    visualTitle.textContent =
+        data.visual;
+
+
+    visualDescription.textContent =
+        data.visualDescription;
+
+
+    renderOperations();
+
+    renderInputs();
+
+    renderFigure();
+
+    clearResult();
+
+}
+
+
+
+/* =========================================================
+   OPERACIONES
+========================================================= */
+
+function renderOperations(){
+
+    const data =
+        figureData[currentFigure];
+
+
+    operationList.innerHTML = "";
+
+
+    data.operations.forEach(operation => {
+
+        const button =
+            document.createElement("button");
+
+
+        button.className =
+            "operation";
+
+
+        if(
+            operation.id ===
+            currentOperation
+        ){
+
+            button.classList.add(
+                "active"
+            );
+
+        }
+
+
+        button.textContent =
+            operation.name;
+
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                currentOperation =
+                    operation.id;
+
+                renderOperations();
+
+                renderInputs();
+
+                renderFigure();
+
+                clearResult();
+
+            }
+        );
+
+
+        operationList.appendChild(
+            button
+        );
+
+    });
+
+}
+
+
+
+/* =========================================================
+   INPUTS DINÁMICOS
+========================================================= */
+
+function createInput(
+    id,
+    label,
+    symbol,
+    placeholder,
+    disabled=false
+){
+
+    return `
+
+        <div class="input-group">
+
+            <label>
+
+                <span>
+                    ${label}
+                </span>
+
+                <span class="side-badge">
+                    ${symbol}
+                </span>
+
+            </label>
+
+            <input
+                id="${id}"
+                type="number"
+                step="any"
+                placeholder="${placeholder}"
+                ${disabled ? "disabled" : ""}
+            >
+
+        </div>
+
+    `;
+
+}
+
+
+
+function renderInputs(){
+
+    let html = "";
+
+
+    /* ==============================================
+       PITÁGORAS
+    ============================================== */
+
+    if(
+        currentFigure ===
+        "pitagoras"
+    ){
+
+        if(
+            currentOperation ===
+            "hipotenusa"
+        ){
+
+            html += createInput(
+                "a",
+                "Cateto A",
+                "a",
+                "Ej. 3"
+            );
+
+            html += createInput(
+                "b",
+                "Cateto B",
+                "b",
+                "Ej. 4"
+            );
+
+            html += createInput(
+                "c",
+                "Hipotenusa",
+                "c",
+                "Se calculará",
+                true
+            );
+
+        }
+
+
+        if(
+            currentOperation ===
+            "catetoA"
+        ){
+
+            html += createInput(
+                "a",
+                "Cateto A",
+                "a",
+                "Se calculará",
+                true
+            );
+
+            html += createInput(
+                "b",
+                "Cateto B",
+                "b",
+                "Ej. 4"
+            );
+
+            html += createInput(
+                "c",
+                "Hipotenusa",
+                "c",
+                "Ej. 5"
+            );
+
+        }
+
+
+        if(
+            currentOperation ===
+            "catetoB"
+        ){
+
+            html += createInput(
+                "a",
+                "Cateto A",
+                "a",
+                "Ej. 3"
+            );
+
+            html += createInput(
+                "b",
+                "Cateto B",
+                "b",
+                "Se calculará",
+                true
+            );
+
+            html += createInput(
+                "c",
+                "Hipotenusa",
+                "c",
+                "Ej. 5"
+            );
+
+        }
+
+    }
+
+
+
+    /* ==============================================
+       CÍRCULO
+    ============================================== */
+
+    if(
+        currentFigure ===
+        "circulo"
+    ){
+
+        if(
+            currentOperation ===
+            "area"
+        ){
+
+            html += createInput(
+                "r",
+                "Radio",
+                "r",
+                "Ej. 5"
+            );
+
+        }
+
+
+        if(
+            currentOperation ===
+            "circunferencia"
+        ){
+
+            html += createInput(
+                "r",
+                "Radio",
+                "r",
+                "Ej. 5"
+            );
+
+        }
+
+
+        if(
+            currentOperation ===
+            "diametro"
+        ){
+
+            html += createInput(
+                "r",
+                "Radio",
+                "r",
+                "Ej. 5"
+            );
+
+        }
+
+
+        if(
+            currentOperation ===
+            "radio"
+        ){
+
+            html += createInput(
+                "d",
+                "Diámetro",
+                "d",
+                "Ej. 10"
+            );
+
+        }
+
+    }
+
+
+
+    /* ==============================================
+       RECTÁNGULO
+    ============================================== */
+
+    if(
+        currentFigure ===
+        "rectangulo"
+    ){
+
+        html += createInput(
+            "base",
+            "Base",
+            "b",
+            "Ej. 8"
+        );
+
+        html += createInput(
+            "altura",
+            "Altura",
+            "h",
+            "Ej. 5"
+        );
+
+    }
+
+
+
+    /* ==============================================
+       CUADRADO
+    ============================================== */
+
+    if(
+        currentFigure ===
+        "cuadrado"
+    ){
+
+        html += createInput(
+            "lado",
+            "Lado",
+            "l",
+            "Ej. 6"
+        );
+
+    }
+
+
+
+    /* ==============================================
+       TRIÁNGULO
+    ============================================== */
+
+    if(
+        currentFigure ===
+        "triangulo"
+    ){
+
+        html += createInput(
+            "base",
+            "Base",
+            "b",
+            "Ej. 8"
+        );
+
+        html += createInput(
+            "altura",
+            "Altura",
+            "h",
+            "Ej. 5"
+        );
+
+        html += createInput(
+            "lado1",
+            "Lado A",
+            "a",
+            "Ej. 6"
+        );
+
+        html += createInput(
+            "lado2",
+            "Lado B",
+            "c",
+            "Ej. 6"
+        );
+
+    }
+
+
+
+    /* ==============================================
+       DISTANCIA
+    ============================================== */
+
+    if(
+        currentFigure ===
+        "distancia"
+    ){
+
+        html += createInput(
+            "x1",
+            "Punto X₁",
+            "x₁",
+            "Ej. 2"
+        );
+
+        html += createInput(
+            "y1",
+            "Punto Y₁",
+            "y₁",
+            "Ej. 3"
+        );
+
+        html += createInput(
+            "x2",
+            "Punto X₂",
+            "x₂",
+            "Ej. 8"
+        );
+
+        html += createInput(
+            "y2",
+            "Punto Y₂",
+            "y₂",
+            "Ej. 7"
+        );
+
+    }
+
+
+    inputsContainer.innerHTML =
+        html;
+
+
+    inputsContainer
+    .querySelectorAll("input")
+    .forEach(input => {
+
+        input.addEventListener(
+            "input",
+            updateFigureValues
+        );
+
+    });
+
+}
+
+
+
+/* =========================================================
+   SVG PITÁGORAS
+========================================================= */
+
+function renderPitagoras(){
+
+    return `
+
+    <svg viewBox="0 0 700 520">
+
+        <polygon
+            points="110,430 570,430 570,100"
+            class="svg-fill"
+        />
+
+
+        <line
+            id="svgA"
+            class="svg-side active"
+            x1="110"
+            y1="430"
+            x2="570"
+            y2="430"
+        />
+
+
+        <line
+            id="svgB"
+            class="svg-side"
+            x1="570"
+            y1="430"
+            x2="570"
+            y2="100"
+        />
+
+
+        <line
+            id="svgC"
+            class="svg-side"
+            x1="110"
+            y1="430"
+            x2="570"
+            y2="100"
+        />
+
+
+        <path
+            class="right-angle"
+            d="M530 430 L530 390 L570 390"
+        />
+
+
+        <text
+            class="svg-label"
+            x="340"
+            y="468"
+        >
+            A
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="svgValueA"
+            x="340"
+            y="495"
+        >
+            —
+        </text>
+
+
+        <text
+            class="svg-label"
+            x="610"
+            y="270"
+        >
+            B
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="svgValueB"
+            x="610"
+            y="300"
+        >
+            —
+        </text>
+
+
+        <text
+            class="svg-label"
+            transform="rotate(-36 325 240)"
+            x="325"
+            y="225"
+        >
+            C
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="svgValueC"
+            transform="rotate(-36 320 270)"
+            x="320"
+            y="270"
+        >
+            —
+        </text>
+
+    </svg>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   SVG CÍRCULO
+========================================================= */
+
+function renderCirculo(){
+
+    return `
+
+    <svg viewBox="0 0 700 520">
+
+        <circle
+            class="svg-outline"
+            cx="350"
+            cy="260"
+            r="165"
+        />
+
+
+        <line
+            id="circleRadius"
+            class="svg-side active"
+            x1="350"
+            y1="260"
+            x2="515"
+            y2="260"
+        />
+
+
+        <line
+            id="circleDiameter"
+            class="svg-side"
+            x1="185"
+            y1="260"
+            x2="515"
+            y2="260"
+            style="opacity:.35"
+        />
+
+
+        <circle
+            cx="350"
+            cy="260"
+            r="8"
+            fill="#ff8a00"
+        />
+
+
+        <text
+            class="svg-label"
+            x="350"
+            y="285"
+        >
+            O
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="circleValueR"
+            x="432"
+            y="245"
+        >
+            r = —
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="circleValueD"
+            x="350"
+            y="310"
+        >
+            d = —
+        </text>
+
+
+        <text
+            class="svg-label"
+            x="350"
+            y="75"
+            style="font-size:28px"
+        >
+            CÍRCULO
+        </text>
+
+    </svg>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   SVG RECTÁNGULO
+========================================================= */
+
+function renderRectangulo(){
+
+    return `
+
+    <svg viewBox="0 0 700 520">
+
+        <rect
+            x="120"
+            y="130"
+            width="460"
+            height="260"
+            class="svg-outline"
+            rx="4"
+        />
+
+
+        <text
+            class="svg-label"
+            x="350"
+            y="425"
+        >
+            BASE
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="rectBase"
+            x="350"
+            y="455"
+        >
+            —
+        </text>
+
+
+        <text
+            class="svg-label"
+            x="620"
+            y="265"
+        >
+            ALTURA
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="rectHeight"
+            x="620"
+            y="295"
+        >
+            —
+        </text>
+
+    </svg>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   SVG CUADRADO
+========================================================= */
+
+function renderCuadrado(){
+
+    return `
+
+    <svg viewBox="0 0 700 520">
+
+        <rect
+            x="185"
+            y="100"
+            width="330"
+            height="330"
+            class="svg-outline"
+        />
+
+
+        <text
+            class="svg-label"
+            x="350"
+            y="475"
+        >
+            LADO
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="squareSide"
+            x="350"
+            y="502"
+        >
+            —
+        </text>
+
+
+        <text
+            class="svg-label"
+            x="555"
+            y="270"
+            transform="rotate(90 555 270)"
+        >
+            CUADRADO
+        </text>
+
+    </svg>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   SVG TRIÁNGULO
+========================================================= */
+
+function renderTriangulo(){
+
+    return `
+
+    <svg viewBox="0 0 700 520">
+
+        <polygon
+            points="120,420 580,420 350,100"
+            class="svg-outline"
+        />
+
+
+        <line
+            class="svg-side"
+            x1="350"
+            y1="100"
+            x2="350"
+            y2="420"
+            style="stroke:var(--orange);stroke-dasharray:12 10"
+        />
+
+
+        <text
+            class="svg-label"
+            x="350"
+            y="460"
+        >
+            BASE
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="triangleBase"
+            x="350"
+            y="490"
+        >
+            —
+        </text>
+
+
+        <text
+            class="svg-label"
+            x="380"
+            y="270"
+        >
+            ALTURA
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="triangleHeight"
+            x="405"
+            y="300"
+        >
+            —
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="triangleSide1"
+            x="225"
+            y="265"
+            transform="rotate(-55 225 265)"
+        >
+            —
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="triangleSide2"
+            x="485"
+            y="265"
+            transform="rotate(55 485 265)"
+        >
+            —
+        </text>
+
+    </svg>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   SVG DISTANCIA
+========================================================= */
+
+function renderDistancia(){
+
+    return `
+
+    <svg viewBox="0 0 700 520">
+
+        <line
+            x1="100"
+            y1="420"
+            x2="600"
+            y2="420"
+            stroke="#777169"
+            stroke-width="3"
+        />
+
+
+        <line
+            x1="100"
+            y1="420"
+            x2="100"
+            y2="80"
+            stroke="#777169"
+            stroke-width="3"
+        />
+
+
+        <line
+            id="distanceLine"
+            x1="180"
+            y1="350"
+            x2="520"
+            y2="150"
+            class="svg-side active"
+        />
+
+
+        <circle
+            cx="180"
+            cy="350"
+            r="10"
+            fill="#ffd21a"
+        />
+
+
+        <circle
+            cx="520"
+            cy="150"
+            r="10"
+            fill="#ff8a00"
+        />
+
+
+        <text
+            class="svg-label"
+            x="165"
+            y="385"
+        >
+            P₁
+        </text>
+
+
+        <text
+            class="svg-label"
+            x="535"
+            y="140"
+        >
+            P₂
+        </text>
+
+
+        <text
+            class="svg-value"
+            id="distanceValue"
+            x="350"
+            y="235"
+        >
+            d = —
+        </text>
+
+
+        <text
+            class="svg-label"
+            x="350"
+            y="480"
+        >
+            DISTANCIA ENTRE DOS PUNTOS
+        </text>
+
+    </svg>
+
+    `;
+
+}
+
+
+
+/* =========================================================
+   RENDER FIGURA
+========================================================= */
+
+function renderFigure(){
+
+    if(
+        currentFigure ===
+        "pitagoras"
+    ){
+
+        figureStage.innerHTML =
+            renderPitagoras();
+
+    }
+
+
+    if(
+        currentFigure ===
+        "circulo"
+    ){
+
+        figureStage.innerHTML =
+            renderCirculo();
+
+    }
+
+
+    if(
+        currentFigure ===
+        "rectangulo"
+    ){
+
+        figureStage.innerHTML =
+            renderRectangulo();
+
+    }
+
+
+    if(
+        currentFigure ===
+        "cuadrado"
+    ){
+
+        figureStage.innerHTML =
+            renderCuadrado();
+
+    }
+
+
+    if(
+        currentFigure ===
+        "triangulo"
+    ){
+
+        figureStage.innerHTML =
+            renderTriangulo();
+
+    }
+
+
+    if(
+        currentFigure ===
+        "distancia"
+    ){
+
+        figureStage.innerHTML =
+            renderDistancia();
+
+    }
+
+
+    updateFigureValues();
+
+}
+
+
+
+/* =========================================================
+   OBTENER VALOR
+========================================================= */
+
+function val(id){
+
+    const element =
+        document.getElementById(id);
+
+    if(!element)
+        return NaN;
+
+    return parseFloat(
+        element.value
+    );
+
+}
+
+
+
+/* =========================================================
+   ACTUALIZAR FIGURA
+========================================================= */
+
+function updateFigureValues(){
+
+    /* ============================================
+       PITÁGORAS
+    ============================================ */
+
+    if(
+        currentFigure ===
+        "pitagoras"
+    ){
+
+        const a = val("a");
+        const b = val("b");
+        const c = val("c");
+
+
+        const A =
+            document.getElementById(
+                "svgValueA"
+            );
+
+        const B =
+            document.getElementById(
+                "svgValueB"
+            );
+
+        const C =
+            document.getElementById(
+                "svgValueC"
+            );
+
+
+        if(A)
+            A.textContent =
+                isNaN(a)
+                    ? "—"
+                    : "a = " + a;
+
+
+        if(B)
+            B.textContent =
+                isNaN(b)
+                    ? "—"
+                    : "b = " + b;
+
+
+        if(C)
+            C.textContent =
+                isNaN(c)
+                    ? "—"
+                    : "c = " + c;
+
+
+        const sideA =
+            document.getElementById(
+                "svgA"
+            );
+
+        const sideB =
+            document.getElementById(
+                "svgB"
+            );
+
+        const sideC =
+            document.getElementById(
+                "svgC"
+            );
+
+
+        if(sideA)
+            sideA.classList.toggle(
+                "active",
+                currentOperation ===
+                "catetoA"
+            );
+
+
+        if(sideB)
+            sideB.classList.toggle(
+                "active",
+                currentOperation ===
+                "catetoB"
+            );
+
+
+        if(sideC)
+            sideC.classList.toggle(
+                "active",
+                currentOperation ===
+                "hipotenusa"
+            );
+
+    }
+
+
+
+    /* ============================================
+       CÍRCULO
+    ============================================ */
+
+    if(
+        currentFigure ===
+        "circulo"
+    ){
+
+        const r = val("r");
+        const d = val("d");
+
+
+        const radius =
+            document.getElementById(
+                "circleValueR"
+            );
+
+        const diameter =
+            document.getElementById(
+                "circleValueD"
+            );
+
+
+        if(radius){
+
+            let radiusValue = r;
+
+            if(
+                currentOperation ===
+                "radio" &&
+                !isNaN(d)
+            ){
+
+                radiusValue =
+                    d / 2;
+
+            }
+
+
+            radius.textContent =
+                isNaN(radiusValue)
+                    ? "r = —"
+                    : "r = " +
+                      radiusValue.toFixed(2);
+
+        }
+
+
+        if(diameter){
+
+            let diameterValue = d;
+
+            if(
+                !isNaN(r) &&
+                (
+                    currentOperation ===
+                    "area" ||
+                    currentOperation ===
+                    "circunferencia" ||
+                    currentOperation ===
+                    "diametro"
+                )
+            ){
+
+                diameterValue =
+                    r * 2;
+
+            }
+
+
+            diameter.textContent =
+                isNaN(diameterValue)
+                    ? "d = —"
+                    : "d = " +
+                      diameterValue.toFixed(2);
+
+        }
+
+    }
+
+
+
+    /* ============================================
+       RECTÁNGULO
+    ============================================ */
+
+    if(
+        currentFigure ===
+        "rectangulo"
+    ){
+
+        const base =
+            val("base");
+
+        const altura =
+            val("altura");
+
+
+        const baseText =
+            document.getElementById(
+                "rectBase"
+            );
+
+        const heightText =
+            document.getElementById(
+                "rectHeight"
+            );
+
+
+        if(baseText){
+
+            baseText.textContent =
+                isNaN(base)
+                    ? "—"
+                    : base;
+
+        }
+
+
+        if(heightText){
+
+            heightText.textContent =
+                isNaN(altura)
+                    ? "—"
+                    : altura;
+
+        }
+
+    }
+
+
+
+    /* ============================================
+       CUADRADO
+    ============================================ */
+
+    if(
+        currentFigure ===
+        "cuadrado"
+    ){
+
+        const lado =
+            val("lado");
+
+
+        const side =
+            document.getElementById(
+                "squareSide"
+            );
+
+
+        if(side){
+
+            side.textContent =
+                isNaN(lado)
+                    ? "—"
+                    : lado;
+
+        }
+
+    }
+
+
+
+    /* ============================================
+       TRIÁNGULO
+    ============================================ */
+
+    if(
+        currentFigure ===
+        "triangulo"
+    ){
+
+        const base =
+            val("base");
+
+        const altura =
+            val("altura");
+
+        const lado1 =
+            val("lado1");
+
+        const lado2 =
+            val("lado2");
+
+
+        const baseText =
+            document.getElementById(
+                "triangleBase"
+            );
+
+        const heightText =
+            document.getElementById(
+                "triangleHeight"
+            );
+
+        const side1Text =
+            document.getElementById(
+                "triangleSide1"
+            );
+
+        const side2Text =
+            document.getElementById(
+                "triangleSide2"
+            );
+
+
+        if(baseText)
+            baseText.textContent =
+                isNaN(base)
+                    ? "—"
+                    : base;
+
+
+        if(heightText)
+            heightText.textContent =
+                isNaN(altura)
+                    ? "—"
+                    : altura;
+
+
+        if(side1Text)
+            side1Text.textContent =
+                isNaN(lado1)
+                    ? "—"
+                    : lado1;
+
+
+        if(side2Text)
+            side2Text.textContent =
+                isNaN(lado2)
+                    ? "—"
+                    : lado2;
+
+    }
+
+
+
+    /* ============================================
+       DISTANCIA
+    ============================================ */
+
+    if(
+        currentFigure ===
+        "distancia"
+    ){
+
+        const x1 =
+            val("x1");
+
+        const y1 =
+            val("y1");
+
+        const x2 =
+            val("x2");
+
+        const y2 =
+            val("y2");
+
+
+        const distanceText =
+            document.getElementById(
+                "distanceValue"
+            );
+
+
+        if(
+            distanceText &&
+            !isNaN(x1) &&
+            !isNaN(y1) &&
+            !isNaN(x2) &&
+            !isNaN(y2)
+        ){
+
+            const d =
+                Math.sqrt(
+                    Math.pow(
+                        x2-x1,
+                        2
+                    ) +
+                    Math.pow(
+                        y2-y1,
+                        2
+                    )
+                );
+
+
+            distanceText.textContent =
+                "d = " +
+                d.toFixed(2);
+
+        }
+        else if(distanceText){
+
+            distanceText.textContent =
+                "d = —";
+
+        }
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LIMPIAR RESULTADO
+========================================================= */
+
+function clearResult(){
+
+    result.textContent =
+        "—";
+
+    steps.textContent =
+        "Introduce los valores para comenzar.";
+
+    alertBox.classList.remove(
+        "show"
+    );
+
+}
+
+
+
+/* =========================================================
+   MOSTRAR ERROR
+========================================================= */
+
+function showError(message){
+
+    alertBox.textContent =
+        message;
+
+    alertBox.classList.add(
+        "show"
+    );
+
+}
+
+
+
+/* =========================================================
+   CALCULAR
+========================================================= */
+
+function calculate(){
+
+    alertBox.classList.remove(
+        "show"
+    );
+
+
+    let answer = 0;
+    let procedure = "";
+    let historyName = "";
+
+
+
+    /* =====================================================
+       PITÁGORAS
+    ===================================================== */
+
+    if(
+        currentFigure ===
+        "pitagoras"
+    ){
+
+        const a = val("a");
+        const b = val("b");
+        const c = val("c");
+
+
+        if(
+            currentOperation ===
+            "hipotenusa"
+        ){
+
+            if(
+                isNaN(a) ||
+                isNaN(b) ||
+                a <= 0 ||
+                b <= 0
+            ){
+
+                showError(
+                    "Ingresa valores positivos para los catetos A y B."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                Math.sqrt(
+                    a*a +
+                    b*b
+                );
+
+
+            document.getElementById(
+                "c"
+            ).value =
+                answer.toFixed(2);
+
+
+            procedure =
+                `c = √(a² + b²)
+= √(${a}² + ${b}²)
+= √(${(a*a+b*b).toFixed(2)})
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Hipotenusa C";
+
+        }
+
+
+
+        if(
+            currentOperation ===
+            "catetoA"
+        ){
+
+            if(
+                isNaN(b) ||
+                isNaN(c) ||
+                b <= 0 ||
+                c <= 0
+            ){
+
+                showError(
+                    "Ingresa el cateto B y la hipotenusa C."
+                );
+
+                return;
+
+            }
+
+
+            if(c <= b){
+
+                showError(
+                    "La hipotenusa debe ser mayor que el cateto B."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                Math.sqrt(
+                    c*c -
+                    b*b
+                );
+
+
+            document.getElementById(
+                "a"
+            ).value =
+                answer.toFixed(2);
+
+
+            procedure =
+                `a = √(c² − b²)
+= √(${c}² − ${b}²)
+= √(${(c*c-b*b).toFixed(2)})
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Cateto A";
+
+        }
+
+
+
+        if(
+            currentOperation ===
+            "catetoB"
+        ){
+
+            if(
+                isNaN(a) ||
+                isNaN(c) ||
+                a <= 0 ||
+                c <= 0
+            ){
+
+                showError(
+                    "Ingresa el cateto A y la hipotenusa C."
+                );
+
+                return;
+
+            }
+
+
+            if(c <= a){
+
+                showError(
+                    "La hipotenusa debe ser mayor que el cateto A."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                Math.sqrt(
+                    c*c -
+                    a*a
+                );
+
+
+            document.getElementById(
+                "b"
+            ).value =
+                answer.toFixed(2);
+
+
+            procedure =
+                `b = √(c² − a²)
+= √(${c}² − ${a}²)
+= √(${(c*c-a*a).toFixed(2)})
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Cateto B";
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       CÍRCULO
+    ===================================================== */
+
+    if(
+        currentFigure ===
+        "circulo"
+    ){
+
+        const r =
+            val("r");
+
+        const d =
+            val("d");
+
+
+        if(
+            currentOperation ===
+            "area"
+        ){
+
+            if(
+                isNaN(r) ||
+                r <= 0
+            ){
+
+                showError(
+                    "Ingresa un radio positivo."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                Math.PI *
+                r *
+                r;
+
+
+            procedure =
+                `A = πr²
+= π(${r})²
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Área del círculo";
+
+        }
+
+
+
+        if(
+            currentOperation ===
+            "circunferencia"
+        ){
+
+            if(
+                isNaN(r) ||
+                r <= 0
+            ){
+
+                showError(
+                    "Ingresa un radio positivo."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                2 *
+                Math.PI *
+                r;
+
+
+            procedure =
+                `C = 2πr
+= 2π(${r})
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Circunferencia";
+
+        }
+
+
+
+        if(
+            currentOperation ===
+            "diametro"
+        ){
+
+            if(
+                isNaN(r) ||
+                r <= 0
+            ){
+
+                showError(
+                    "Ingresa un radio positivo."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                2*r;
+
+
+            document.getElementById(
+                "d"
+            ).value =
+                answer.toFixed(2);
+
+
+            procedure =
+                `d = 2r
+= 2(${r})
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Diámetro";
+
+        }
+
+
+
+        if(
+            currentOperation ===
+            "radio"
+        ){
+
+            if(
+                isNaN(d) ||
+                d <= 0
+            ){
+
+                showError(
+                    "Ingresa un diámetro positivo."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                d/2;
+
+
+            procedure =
+                `r = d/2
+= ${d}/2
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Radio";
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       RECTÁNGULO
+    ===================================================== */
+
+    if(
+        currentFigure ===
+        "rectangulo"
+    ){
+
+        const base =
+            val("base");
+
+        const altura =
+            val("altura");
+
+
+        if(
+            isNaN(base) ||
+            isNaN(altura) ||
+            base <= 0 ||
+            altura <= 0
+        ){
+
+            showError(
+                "Ingresa una base y una altura positivas."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            currentOperation ===
+            "area"
+        ){
+
+            answer =
+                base *
+                altura;
+
+
+            procedure =
+                `A = b × h
+= ${base} × ${altura}
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Área del rectángulo";
+
+        }
+
+
+        if(
+            currentOperation ===
+            "perimetro"
+        ){
+
+            answer =
+                2 *
+                (base+altura);
+
+
+            procedure =
+                `P = 2(b + h)
+= 2(${base} + ${altura})
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Perímetro del rectángulo";
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       CUADRADO
+    ===================================================== */
+
+    if(
+        currentFigure ===
+        "cuadrado"
+    ){
+
+        const lado =
+            val("lado");
+
+
+        if(
+            isNaN(lado) ||
+            lado <= 0
+        ){
+
+            showError(
+                "Ingresa un lado positivo."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            currentOperation ===
+            "area"
+        ){
+
+            answer =
+                lado *
+                lado;
+
+
+            procedure =
+                `A = l²
+= ${lado}²
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Área del cuadrado";
+
+        }
+
+
+        if(
+            currentOperation ===
+            "perimetro"
+        ){
+
+            answer =
+                4 *
+                lado;
+
+
+            procedure =
+                `P = 4l
+= 4(${lado})
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Perímetro del cuadrado";
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       TRIÁNGULO
+    ===================================================== */
+
+    if(
+        currentFigure ===
+        "triangulo"
+    ){
+
+        const base =
+            val("base");
+
+        const altura =
+            val("altura");
+
+        const lado1 =
+            val("lado1");
+
+        const lado2 =
+            val("lado2");
+
+
+        if(
+            currentOperation ===
+            "area"
+        ){
+
+            if(
+                isNaN(base) ||
+                isNaN(altura) ||
+                base <= 0 ||
+                altura <= 0
+            ){
+
+                showError(
+                    "Ingresa una base y una altura positivas."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                (base*altura)/2;
+
+
+            procedure =
+                `A = (b × h) / 2
+= (${base} × ${altura}) / 2
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Área del triángulo";
+
+        }
+
+
+        if(
+            currentOperation ===
+            "perimetro"
+        ){
+
+            if(
+                isNaN(base) ||
+                isNaN(lado1) ||
+                isNaN(lado2) ||
+                base <= 0 ||
+                lado1 <= 0 ||
+                lado2 <= 0
+            ){
+
+                showError(
+                    "Ingresa los tres lados del triángulo."
+                );
+
+                return;
+
+            }
+
+
+            answer =
+                base +
+                lado1 +
+                lado2;
+
+
+            procedure =
+                `P = b + a + c
+= ${base} + ${lado1} + ${lado2}
+= ${answer.toFixed(2)}`;
+
+
+            historyName =
+                "Perímetro del triángulo";
+
+        }
+
+    }
+
+
+
+    /* =====================================================
+       DISTANCIA
+    ===================================================== */
+
+    if(
+        currentFigure ===
+        "distancia"
+    ){
+
+        const x1 =
+            val("x1");
+
+        const y1 =
+            val("y1");
+
+        const x2 =
+            val("x2");
+
+        const y2 =
+            val("y2");
+
+
+        if(
+            isNaN(x1) ||
+            isNaN(y1) ||
+            isNaN(x2) ||
+            isNaN(y2)
+        ){
+
+            showError(
+                "Completa las coordenadas de los dos puntos."
+            );
+
+            return;
+
+        }
+
+
+        answer =
+            Math.sqrt(
+                Math.pow(
+                    x2-x1,
+                    2
+                ) +
+                Math.pow(
+                    y2-y1,
+                    2
+                )
+            );
+
+
+        procedure =
+            `d = √[(x₂−x₁)² + (y₂−y₁)²]
+= √[(${x2}−${x1})² + (${y2}−${y1})²]
+= ${answer.toFixed(2)}`;
+
+
+        historyName =
+            "Distancia entre puntos";
+
+    }
+
+
+
+    /* =====================================================
+       MOSTRAR RESULTADO
+    ===================================================== */
+
+    result.textContent =
+        answer.toFixed(2);
+
+
+    steps.innerHTML =
+        procedure.replace(
+            /\n/g,
+            "<br>"
+        );
+
+
+    updateFigureValues();
+
+
+    saveHistory(
+        historyName,
+        answer
+    );
+
+}
+
+
+
+/* =========================================================
+   HISTORIAL
+========================================================= */
+
+function saveHistory(
+    operation,
+    answer
+){
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "geometryHistory"
+            ) || "[]"
+        );
+
+
+    history.unshift({
+
+        figure:
+            figureData[
+                currentFigure
+            ].title,
+
+        operation:
+            operation,
+
+        result:
+            answer.toFixed(2),
+
+        date:
+            new Date().toLocaleString(
+                "es-GT"
+            )
+
+    });
+
+
+    if(
+        history.length > 20
+    ){
+
+        history.pop();
+
+    }
+
+
+    localStorage.setItem(
+        "geometryHistory",
+        JSON.stringify(history)
+    );
+
+
+    renderHistory();
+
+}
+
+
+
+/* =========================================================
+   MOSTRAR HISTORIAL
+========================================================= */
+
+function renderHistory(){
+
+    const container =
+        document.getElementById(
+            "historyList"
+        );
+
+
+    const history =
+        JSON.parse(
+            localStorage.getItem(
+                "geometryHistory"
+            ) || "[]"
+        );
+
+
+    if(
+        history.length === 0
+    ){
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                Todavía no hay operaciones registradas.
+
+                <br><br>
+
+                Realiza tu primer cálculo.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        history.map(item => `
+
+            <div class="history-item">
+
+                <div class="history-main">
+
+                    <div class="history-icon">
+                        √
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            ${item.operation}
+                        </strong>
+
+                        <small>
+                            ${item.figure}
+                            ·
+                            ${item.date}
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div class="history-result">
+
+                    ${item.result}
+
+                </div>
+
+            </div>
+
+        `).join("");
+
+}
+
+
+renderHistory();
+
+
+
+/* =========================================================
+   CANVAS ANIMADO
+========================================================= */
+
+const canvas =
+    document.getElementById(
+        "mathCanvas"
+    );
+
+const ctx =
+    canvas.getContext("2d");
+
+
+let particles = [];
+
+
+const symbols = [
+
+    "π",
+    "√",
+    "∑",
+    "∆",
+    "∞",
+    "x²",
+    "a²",
+    "b²",
+    "c²",
+    "{}",
+    "</>",
+    "01",
+    "△",
+    "○",
+    "□"
+
+];
+
+
+function resizeCanvas(){
+
+    canvas.width =
+        window.innerWidth *
+        devicePixelRatio;
+
+    canvas.height =
+        window.innerHeight *
+        devicePixelRatio;
+
+    canvas.style.width =
+        window.innerWidth +
+        "px";
+
+    canvas.style.height =
+        window.innerHeight +
+        "px";
+
+    ctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+
+}
+
+
+resizeCanvas();
+
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+
+
+function createParticles(){
+
+    particles = [];
+
+
+    const amount =
+        Math.min(
+            85,
+            Math.floor(
+                window.innerWidth / 16
+            )
+        );
+
+
+    for(
+        let i=0;
+        i<amount;
+        i++
+    ){
+
+        particles.push({
+
+            x:
+                Math.random() *
+                window.innerWidth,
+
+            y:
+                Math.random() *
+                window.innerHeight,
+
+            speed:
+                .15 +
+                Math.random()*.45,
+
+            size:
+                11 +
+                Math.random()*15,
+
+            symbol:
+                symbols[
+                    Math.floor(
+                        Math.random() *
+                        symbols.length
+                    )
+                ],
+
+            opacity:
+                .12 +
+                Math.random()*.28
+
+        });
+
+    }
+
+}
+
+
+createParticles();
+
+
+
+function animateBackground(){
+
+    ctx.clearRect(
+        0,
+        0,
+        window.innerWidth,
+        window.innerHeight
+    );
+
+
+    particles.forEach(p => {
+
+        p.y -= p.speed;
+
+
+        if(
+            p.y < -30
+        ){
+
+            p.y =
+                window.innerHeight +
+                30;
+
+            p.x =
+                Math.random() *
+                window.innerWidth;
+
+        }
+
+
+        ctx.globalAlpha =
+            p.opacity;
+
+
+        ctx.font =
+            `700 ${p.size}px Arial`;
+
+
+        ctx.fillStyle =
+            p.symbol === "√"
+                ? "#ffd21a"
+                : "#ff8a00";
+
+
+        ctx.fillText(
+            p.symbol,
+            p.x,
+            p.y
+        );
+
+    });
+
+
+    ctx.globalAlpha = 1;
+
+
+    requestAnimationFrame(
+        animateBackground
+    );
+
+}
+
+
+animateBackground();
+
+
+
+/* =========================================================
+   INICIO
+========================================================= */
+
+renderCalculator();
+
+</script>
+
+</body>
+</html>
